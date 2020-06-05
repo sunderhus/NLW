@@ -1,7 +1,11 @@
-import React from "react";
+import React from 'react';
+import Routes from './routes'
+import './App.css'
 
-export const App: React.FC = () => {
-  return <h1>NLW</h1>;
-};
+const App: React.FC = () => {
+  return (
+    <Routes />
+  )
+}
 
 export default App;
