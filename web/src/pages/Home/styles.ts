@@ -96,8 +96,7 @@ export const Container = styled.div`
     }
   }
 }
-@media(min-width:1900px){
-  background:url(${homeBackground})no-repeat 90% bottom  ;
-
-}
+  @media(min-width:1600px){
+    background:url(${homeBackground})no-repeat 90% bottom  ;
+  }
 `
