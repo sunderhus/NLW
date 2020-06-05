@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState, useCallback, ChangeEvent, FormEvent } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { Map, TileLayer, Marker } from 'react-leaflet'
 import { LeafletMouseEvent } from 'leaflet'
 import { FiArrowLeft } from 'react-icons/fi';
@@ -23,15 +23,66 @@ interface IBGEUFResponse {
 interface IBGECityResponse {
   nome: string;
 }
+interface FormProps {
+  name: string;
+  email: string;
+  whatsapp: string;
+}
 
 const CreatePoint: React.FC = () => {
+  const [formData, setFormData] = useState<FormProps>({
+    name: '',
+    email: '',
+    whatsapp: ''
+  })
   const [items, setItems] = useState<ItemsProps[]>([]);
   const [ufs, setUfs] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [selectedUf, setSelectedUf] = useState('0');
   const [selectedCity, setSelectedCity] = useState('0');
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
   const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0]);
+
+  const history = useHistory();
+
+
+  const handleSubmit = useCallback(async (event: FormEvent) => {
+    event.preventDefault();
+    const { name, email, whatsapp } = formData;
+    const uf = selectedUf;
+    const city = selectedCity;
+    const [lat, lng] = selectedPosition
+    const items = selectedItems
+
+    const data = { name, email, whatsapp, uf, city, lat, lng, items };
+
+    await api.post('points', data);
+
+    alert('Ponto de coleta criado com sucesso.');
+
+    history.push('/');
+
+
+  }, [formData, history, selectedCity, selectedItems, selectedPosition, selectedUf])
+
+  const handleSelectItem = useCallback((id: number) => {
+    if (selectedItems.includes(id)) {
+      const filteredItems = selectedItems.filter(item => item !== id);
+
+      setSelectedItems(filteredItems);
+    } else {
+      setSelectedItems([...selectedItems, id]);
+    }
+
+  }, [selectedItems])
+
+  const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    setFormData({ ...formData, [name]: value });
+  }, [formData])
+
 
   const handleSelectUf = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
     const uf = event.target.value
@@ -106,7 +157,7 @@ const CreatePoint: React.FC = () => {
         </Link>
       </header>
 
-      <form autoComplete="off">
+      <form autoComplete="off" onSubmit={handleSubmit}>
         <h1>Cadastro do <br /> Ponto de coleta</h1>
 
         <fieldset>
@@ -115,18 +166,18 @@ const CreatePoint: React.FC = () => {
           </legend>
           <div className="field">
             <label htmlFor="name">Nome da entidade</label>
-            <input type="text" name="name" id="name" />
+            <input onChange={handleInputChange} type="text" name="name" id="name" />
           </div>
 
           <div className="field-group">
             <div className="field">
               <label htmlFor="email">E-mail</label>
-              <input type="email" name="email" id="email" />
+              <input onChange={handleInputChange} type="email" name="email" id="email" />
             </div>
 
             <div className="field">
               <label htmlFor="name">Whatsapp</label>
-              <input type="tel" name="whatsapp" id="whatsapp" />
+              <input onChange={handleInputChange} type="text" name="whatsapp" id="whatsapp" />
             </div>
           </div>
 
@@ -176,7 +227,7 @@ const CreatePoint: React.FC = () => {
           </legend>
           <ItemsGrid>
             {items.map(({ id, title, image_uri }) => (
-              <li key={id}>
+              <li className={selectedItems.includes(id) ? 'selected' : ''} key={id} onClick={() => handleSelectItem(id)}>
                 <img src={image_uri} alt={title} />
                 <span>{title}</span>
               </li>
