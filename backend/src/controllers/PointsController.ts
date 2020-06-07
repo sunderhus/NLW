@@ -37,10 +37,6 @@ class PointsController {
       .distinct()
       .select('points.*');
 
-    if (!points.length) {
-      return response.status(400).json({ message: `Points not found` });
-    }
-
     return response.json(points);
   }
 
