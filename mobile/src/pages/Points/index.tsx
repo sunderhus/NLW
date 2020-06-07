@@ -27,14 +27,15 @@ interface Params {
     city: string;
 }
 const Points: React.FC = () => {
-    const navigation = useNavigation();
-    const route = useRoute();
-    const routeParams = route.params as Params;
 
     const [points, setPoints] = useState<Point[]>([]);
     const [items, setItems] = useState<Item[]>([]);
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0]);
+
+    const navigation = useNavigation();
+    const route = useRoute();
+    const routeParams = route.params as Params;
 
     const handleSelectItem = useCallback((id: number) => {
         if (selectedItems.includes(id)) {
@@ -58,17 +59,15 @@ const Points: React.FC = () => {
 
 
     useEffect(() => {
-        const loadPoints = async () => {
-            const response = await api.get<Point[]>('points', {
-                params: {
-                    uf: routeParams.uf,
-                    city: routeParams.city,
-                    items: selectedItems
-                }
-            })
-            setPoints(response.data);
-        }
-        loadPoints();
+        api.get('points', {
+            params: {
+                city: routeParams.city,
+                uf: routeParams.uf,
+                items: selectedItems
+            }
+        }).then(response => {
+            setPoints(response.data)
+        })
     }, [selectedItems])
 
     useEffect(() => {

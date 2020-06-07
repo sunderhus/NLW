@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, Alert, Linking } from 'react-native';
+import { AppLoading } from 'expo'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Feather as Icon, FontAwesome } from '@expo/vector-icons'
 import * as MailComposer from 'expo-mail-composer';
@@ -21,47 +22,38 @@ interface Data {
         whatsapp: string;
         city: string;
         uf: string;
-        items: { title: string }[]
-
     },
     items: {
-        title: string
+        title: string;
     }[]
 }
 
 const Detail: React.FC = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const routeParams = route.params as RouteParams
 
     const [data, setData] = useState<Data>({} as Data);
+    const routeParams = route.params as RouteParams
 
     const handleNavigateBack = useCallback(() => {
         navigation.navigate("Points");
     }, [])
 
 
-    useEffect(() => {
-        const loadData = async () => {
-            const response = await api.get<Data>(`points/${routeParams.point_id}`)
 
-            setData(response.data);
-        }
-        loadData();
-    }, [])
 
     const handleComposeMail = useCallback(async () => {
         const result = await MailComposer.composeAsync({
             subject: 'Interesse na coleta de resíduos',
-            recipients: [data.point.email,],
+            recipients: [String(data.point.email)],
         })
 
-        result.status && Alert.alert('♻ Tudo certo!', 'E-mail enviado com sucesso.');
+        result.status === "sent" && Alert.alert('♻ Tudo certo!', 'E-mail enviado com sucesso.');
 
-    }, [])
+    }, [MailComposer, data])
 
     const handleWhatsapp = useCallback(async () => {
-        const url = `whatsapp://send?phone=${data.point.whatsapp}&text=Gostaria de saber mais sobre a coleta de resíduos.♻ `
+        const url = `whatsapp://send?phone=${String(data.point.whatsapp)}&text=Gostaria de saber mais sobre a coleta de resíduos.♻ `
 
         const canOpenUrl = await Linking.canOpenURL(url)
 
@@ -71,14 +63,21 @@ const Detail: React.FC = () => {
             Alert.alert('♻ Ops...', 'Parece que algo deu errado ao tentar abrir o Whatsapp deste estabelecimento.')
         }
 
-    }, [])
+    }, [Linking, Alert, data])
 
+
+    useEffect(() => {
+        api.get(`points/${routeParams.point_id}`).then(response => {
+            setData(response.data as Data);
+        })
+    }, [routeParams, api])
 
 
 
     if (!data.point) {
-        return null;
+        return <AppLoading />;
     }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Container>

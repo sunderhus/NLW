@@ -7,15 +7,15 @@ import { Container, Main, Logo, Title, Description, Footer, Input, FooterButton,
 
 export const Home: React.FC = () => {
     const navigation = useNavigation();
-    const [selectedUF, setSelectedUf] = useState('');
-    const [selectedCity, setSelectedCity] = useState('');
+    const [selectedUF, setSelectedUf] = useState<string>('');
+    const [selectedCity, setSelectedCity] = useState<string>('');
 
     const handleNavigateToPoints = useCallback(() => {
         navigation.navigate('Points', {
             uf: selectedUF,
             city: selectedCity,
         });
-    }, [])
+    }, [selectedUF, selectedCity])
 
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -48,7 +48,6 @@ export const Home: React.FC = () => {
                         placeholder="Digite a cidade"
                         value={selectedCity}
                         autoCorrect={false}
-                        autoCapitalize="words"
                         onChangeText={text => setSelectedCity(text)}
                     />
 
