@@ -7,13 +7,13 @@ import { Container, Main, Logo, Title, Description, Footer, Input, FooterButton,
 
 export const Home: React.FC = () => {
     const navigation = useNavigation();
-    const [uf, setUf] = useState('');
-    const [city, setCity] = useState('');
+    const [selectedUF, setSelectedUf] = useState('');
+    const [selectedCity, setSelectedCity] = useState('');
 
     const handleNavigateToPoints = useCallback(() => {
         navigation.navigate('Points', {
-            city,
-            uf
+            uf: selectedUF,
+            city: selectedCity,
         });
     }, [])
 
@@ -40,16 +40,16 @@ export const Home: React.FC = () => {
                         style={{ marginTop: 100 }}
                         placeholder="Digite a UF"
                         maxLength={2}
-                        value={uf}
-                        onChangeText={text => setUf(text)}
+                        value={selectedUF}
+                        onChangeText={text => setSelectedUf(text)}
 
                     />
                     <Input
                         placeholder="Digite a cidade"
-                        value={city}
+                        value={selectedCity}
                         autoCorrect={false}
                         autoCapitalize="words"
-                        onChangeText={text => setCity(text)}
+                        onChangeText={text => setSelectedCity(text)}
                     />
 
                     <FooterButton onPress={handleNavigateToPoints}>

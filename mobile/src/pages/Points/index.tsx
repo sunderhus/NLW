@@ -36,7 +36,6 @@ const Points: React.FC = () => {
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0]);
 
-
     const handleSelectItem = useCallback((id: number) => {
         if (selectedItems.includes(id)) {
             const filteredItems = selectedItems.filter(item => item !== id);
@@ -67,7 +66,6 @@ const Points: React.FC = () => {
                     items: selectedItems
                 }
             })
-
             setPoints(response.data);
         }
         loadPoints();
