@@ -6,7 +6,7 @@ interface PointItemsProps {
 }
 
 class PointsController {
-  async index(request: Request, response: Response) {
+  async show(request: Request, response: Response) {
     const { id } = request.params;
 
     const point = await knex('points').where('id', id).first();
@@ -22,7 +22,7 @@ class PointsController {
     return response.json({ point, items });
   }
 
-  async list(request: Request, response: Response) {
+  async index(request: Request, response: Response) {
     const { uf, city, items } = request.query;
 
     const parsedItems = String(items)

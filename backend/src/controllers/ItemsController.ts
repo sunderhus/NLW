@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import knex from '../database/connection';
 
 class ItemsController {
-  async index(request: Request, response: Response) {
+  async show(request: Request, response: Response) {
     const itemID = request.params['id'];
 
     const item = await knex('items').where('id', itemID).first();
@@ -13,13 +13,13 @@ class ItemsController {
 
     const serializedItem = {
       ...item,
-      image_uri: `http://localhost:3333/uploads/${item.image}`,
+      image_uri: `http://192.168.0.18:3333/uploads/${item.image}`,
     };
 
     return response.json(serializedItem);
   }
 
-  async list(request: Request, response: Response) {
+  async index(request: Request, response: Response) {
     const items = await knex('items').select('*');
     const serializedItems = items.map(({ id, title, image }) => ({
       id,
@@ -31,7 +31,7 @@ class ItemsController {
   }
 
   async create(request: Request, response: Response) {
-    return response.status(400).json({ message: 'not implemented.' });
+    return response.status(400).json({ message: 'Not implemented.' });
   }
 }
 
