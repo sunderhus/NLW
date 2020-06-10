@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import { Feather as Icon } from '@expo/vector-icons'
-import { Container, Main, Logo, Title, Description, Footer, Input, SelectContainer, Select, FooterButton, FooterButtonIcon, FooterButtonText } from './styles'
+import { Container, Main, Logo, Title, Description, Footer, Select, FooterButton, FooterButtonIcon, FooterButtonText } from './styles'
 import axios from 'axios';
 interface IBGEUFResponse {
     sigla: string;

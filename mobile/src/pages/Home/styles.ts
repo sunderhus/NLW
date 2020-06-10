@@ -1,6 +1,5 @@
-import styled, { css } from 'styled-components/native'
+import styled from 'styled-components/native'
 import { RectButton } from 'react-native-gesture-handler';
-import { PickerProps } from 'react-native';
 
 
 export const Container = styled.ImageBackground`
