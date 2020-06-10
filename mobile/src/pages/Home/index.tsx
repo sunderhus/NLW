@@ -1,13 +1,22 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import { Feather as Icon } from '@expo/vector-icons'
-import { Container, Main, Logo, Title, Description, Footer, Input, FooterButton, FooterButtonIcon, FooterButtonText } from './styles'
-
+import { Container, Main, Logo, Title, Description, Footer, Input, SelectContainer, Select, FooterButton, FooterButtonIcon, FooterButtonText } from './styles'
+import axios from 'axios';
+interface IBGEUFResponse {
+    sigla: string;
+    nome: string;
+}
+interface IBGECityResponse {
+    nome: string;
+}
 
 export const Home: React.FC = () => {
     const navigation = useNavigation();
-    const [selectedUF, setSelectedUf] = useState<string>('');
+    const [ufs, setUfs] = useState<IBGEUFResponse[]>([]);
+    const [cities, setCities] = useState<string[]>([]);
+    const [selectedUF, setSelectedUf] = useState<string>('0');
     const [selectedCity, setSelectedCity] = useState<string>('');
 
     const handleNavigateToPoints = useCallback(() => {
@@ -16,6 +25,42 @@ export const Home: React.FC = () => {
             city: selectedCity,
         });
     }, [selectedUF, selectedCity])
+
+    useEffect(() => {
+        const loadLocations = async () => {
+            const response = await axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados', {
+                params: {
+                    'OrderBy': 'Nome'
+                }
+            });
+
+            const ufInitials = response.data.map(uf => ({
+                sigla: uf.sigla,
+                nome: uf.nome
+            }));
+
+            setUfs(ufInitials);
+
+        }
+        loadLocations();
+    }, [])
+
+    useEffect(() => {
+        const loadCities = async () => {
+            if (selectedUF !== '0') {
+                const response = await axios
+                    .get<IBGECityResponse[]>
+                    (`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUF}/municipios`);
+
+                const cityNames = response.data.map(city => city.nome);
+
+                setCities(cityNames)
+                setSelectedCity(cityNames[0])
+            }
+        }
+        loadCities();
+    }, [selectedUF])
+
 
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -34,23 +79,20 @@ export const Home: React.FC = () => {
                 </Main>
 
                 <Footer>
-                    <Input
-                        autoCapitalize="characters"
-                        autoCorrect={false}
-                        style={{ marginTop: 100 }}
-                        placeholder="Digite a UF"
-                        maxLength={2}
-                        value={selectedUF}
-                        onChangeText={text => setSelectedUf(text)}
-
-                    />
-                    <Input
-                        placeholder="Digite a cidade"
-                        value={selectedCity}
-                        autoCorrect={false}
-                        onChangeText={text => setSelectedCity(text)}
-                    />
-
+                    <Select
+                        selectedValue={selectedUF}
+                        onValueChange={(itemValue) => setSelectedUf(itemValue)}>
+                        {ufs.map(({ nome, sigla }) => (
+                            <Select.Item key={sigla} label={`${nome} - ${sigla}`} value={sigla} />
+                        ))}
+                    </Select>
+                    <Select
+                        selectedValue={selectedCity}
+                        onValueChange={(itemValue) => setSelectedCity(itemValue)}>
+                        {cities.map(city => (
+                            <Select.Item key={city} label={city} value={city} />
+                        ))}
+                    </Select>
                     <FooterButton onPress={handleNavigateToPoints}>
                         <FooterButtonText>Entrar</FooterButtonText>
                         <FooterButtonIcon>
