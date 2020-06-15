@@ -6,7 +6,7 @@ import { FiArrowLeft } from 'react-icons/fi';
 import axios from 'axios';
 import api from '../../services/api';
 
-
+import Dropzone from '../../components/Dropzone';
 import logo from '../../assets/logo.svg'
 
 import { Container, ItemsGrid } from './styles'
@@ -43,28 +43,11 @@ const CreatePoint: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
   const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0]);
+  const [selectedFile, setSelectedFile] = useState<File>();
 
   const history = useHistory();
 
 
-  const handleSubmit = useCallback(async (event: FormEvent) => {
-    event.preventDefault();
-    const { name, email, whatsapp } = formData;
-    const uf = selectedUf;
-    const city = selectedCity;
-    const [lat, lng] = selectedPosition
-    const items = selectedItems
-
-    const data = { name, email, whatsapp, uf, city, lat, lng, items };
-
-    await api.post('points', data);
-
-    alert('Ponto de coleta criado com sucesso.');
-
-    history.push('/');
-
-
-  }, [formData, history, selectedCity, selectedItems, selectedPosition, selectedUf])
 
   const handleSelectItem = useCallback((id: number) => {
     if (selectedItems.includes(id)) {
@@ -99,6 +82,40 @@ const CreatePoint: React.FC = () => {
 
     setSelectedPosition([lat, lng]);
   }, [])
+
+  const handleSubmit = useCallback(async (event: FormEvent) => {
+    event.preventDefault();
+    const { name, email, whatsapp } = formData;
+    const uf = selectedUf;
+    const city = selectedCity;
+    const [lat, lng] = selectedPosition
+    const items = selectedItems
+
+    const data = new FormData();
+
+
+    data.append('name', name);
+    data.append('email', email);
+    data.append('whatsapp', whatsapp);
+    data.append('uf', uf);
+    data.append('city', city);
+    data.append('lat', String(lat));
+    data.append('lng', String(lng));
+    data.append('items', items.join(','));
+
+    if (selectedFile) {
+      data.append('image', selectedFile)
+    }
+
+    await api.post('points', data);
+
+    alert('Ponto de coleta criado com sucesso.');
+
+    history.push('/');
+
+
+  }, [formData, history, selectedCity, selectedItems, selectedPosition, selectedUf, selectedFile])
+
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(position => {
@@ -159,7 +176,7 @@ const CreatePoint: React.FC = () => {
 
       <form autoComplete="off" onSubmit={handleSubmit}>
         <h1>Cadastro do <br /> Ponto de coleta</h1>
-
+        <Dropzone onFileUploaded={setSelectedFile} />
         <fieldset>
           <legend>
             <h2>Dados</h2>
