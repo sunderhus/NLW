@@ -3,7 +3,7 @@
 Learning and having fun developing an environment helper to recycle items in your city and perhaps the world.
 
 <p>
-<img src="https://image.flaticon.com/icons/svg/174/174857.svg"> [Get in touch - Linkedin](https://www.linkedin.com/in/matheus-sunderhus/)</p>
+<img width="32" src="https://image.flaticon.com/icons/svg/174/174857.svg"> [Get in touch - Linkedin](https://www.linkedin.com/in/matheus-sunderhus/)</p>
 
 1. Clone this repository.
 2. In your local machine, go to project directory and run `yarn` to install all dependencies.
