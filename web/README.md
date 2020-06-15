@@ -2,11 +2,12 @@
 
 Learning and having fun developing an environment helper to recycle items in your city and perhaps the world.
 
-[Get in touch - Linkedin](https://www.linkedin.com/in/matheus-sunderhus/)
+<p>
+<img src="https://image.flaticon.com/icons/svg/174/174857.svg"> [Get in touch - Linkedin](https://www.linkedin.com/in/matheus-sunderhus/)</p>
 
 1. Clone this repository.
 2. In your local machine, go to project directory and run `yarn` to install all dependencies.
-3. Now, run `yarn start` to launch this project in your browser.Enjoy!
+3. Now, run `yarn start` to launch this project in your browser. Enjoy!
 
 ## Day 1: ✅ - Backend with Node JS + Express
 
