@@ -17,6 +17,7 @@ interface Data {
     point: {
         id: number;
         image: string;
+        image_url: string;
         name: string;
         email: string;
         whatsapp: string;
@@ -93,7 +94,7 @@ const Detail: React.FC = () => {
                     style={{
                         resizeMode: 'cover'
                     }}
-                    source={{ uri: "https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60" }}
+                    source={{ uri: data.point.image_url }}
                 />
                 <PointName>{data.point.name}</PointName>
                 <PointItems>{data.items.map(item => item.title).join(', ')}</PointItems>

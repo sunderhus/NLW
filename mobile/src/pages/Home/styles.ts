@@ -12,8 +12,8 @@ export const Main = styled.View`
     justify-content:center;
 
 `
-export const  Logo = styled.Image`
-` 
+export const Logo = styled.Image`
+`
 
 export const Title = styled.Text`
     color: #322153;
@@ -45,6 +45,11 @@ export const Input = styled.TextInput`
 
 `
 
+export const Select = styled.Picker`
+    height: 60px;
+    background-color: #fff;
+    margin-bottom: 8px;
+`
 
 export const FooterButton = styled(RectButton)`
     background-color:#34cb79;

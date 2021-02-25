@@ -1,10 +1,22 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
+const pontosForm = keyframes`
+  from{
+    opacity:0.3;
+    transform:translateX(-90px);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0%);
+  }
+`;
 
 export const Container = styled.div`
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
+
+
   header {
     margin-top: 48px;
     display: flex;
@@ -32,6 +44,8 @@ export const Container = styled.div`
     border-radius: 8px;
     display: flex;
     flex-direction: column;
+    animation: ${pontosForm} 0.65s linear forwards;
+
 
       h1 {
         font-size: 36px;
